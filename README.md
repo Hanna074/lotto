@@ -1,6 +1,6 @@
 # Django와 Docker을 활용하여 로또 사이트 만들기
 
-## 📋 프로젝트 구조
+## 프로젝트 구조
 
 ```
 django-lotto/
