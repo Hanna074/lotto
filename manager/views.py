@@ -37,7 +37,7 @@ def sales_list(request):
 
     drawings = Drawing.objects.all()
     total = purchases.count()
-    auto_count   = purchases.filter(purchase_type='auto').count()
+    auto_count = purchases.filter(purchase_type='auto').count()
     manual_count = purchases.filter(purchase_type='manual').count()
 
     return render(request, 'manager/sales.html', {
@@ -53,7 +53,8 @@ def sales_list(request):
 @staff_member_required
 def run_draw(request):
     """추첨 실행"""
-    current_drawing = Drawing.objects.filter(is_completed=False).order_by('draw_number').last()
+    current_drawing = Drawing.objects.filter(
+        is_completed=False).order_by('draw_number').last()
 
     if request.method == 'POST':
         action = request.POST.get('action')
@@ -61,19 +62,20 @@ def run_draw(request):
         if action == 'create_round':
             # 새 회차 생성
             last = Drawing.objects.order_by('-draw_number').first()
-            next_num  = (last.draw_number + 1) if last else 1
+            next_num = (last.draw_number + 1) if last else 1
             next_date = date.today() + timedelta(days=7)
             Drawing.objects.create(draw_number=next_num, draw_date=next_date)
             messages.success(request, f'제{next_num}회 회차가 생성되었습니다.')
             return redirect('run_draw')
 
         if action == 'draw' and current_drawing:
-            pool    = random.sample(range(1, 46), 7)
+            pool = random.sample(range(1, 46), 7)
             numbers = sorted(pool[:6])
-            bonus   = pool[6]
-            current_drawing.numbers      = numbers
-            current_drawing.bonus        = bonus
+            bonus = pool[6]
+            current_drawing.numbers = numbers
+            current_drawing.bonus = bonus
             current_drawing.is_completed = True
+            current_drawing.draw_date = date.today()
             current_drawing.save()
             win_count = _calculate_winners(current_drawing)
             messages.success(
@@ -100,10 +102,12 @@ def winners_list(request):
 
     draw_filter = request.GET.get('draw', '')
     if draw_filter:
-        win_records = win_records.filter(purchase__drawing__draw_number=draw_filter)
+        win_records = win_records.filter(
+            purchase__drawing__draw_number=draw_filter)
 
-    drawings    = Drawing.objects.filter(is_completed=True)
-    rank_stats  = win_records.values('rank').annotate(cnt=Count('id')).order_by('rank')
+    drawings = Drawing.objects.filter(is_completed=True)
+    rank_stats = win_records.values('rank').annotate(
+        cnt=Count('id')).order_by('rank')
 
     return render(request, 'manager/winners.html', {
         'win_records': win_records,
