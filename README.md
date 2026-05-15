@@ -41,11 +41,3 @@ django-lotto/
 | 관리자 | 판매 내역 조회 |
 | 관리자 | 추첨 실행 (당첨 번호 결정) |
 | 관리자 | 당첨 내역 조회 |
-
-## 사용 기술
-
-- **Backend**: Django 4.2, Python 3.11
-- **Database**: PostgreSQL 15
-- **Web Server**: Nginx 1.25 (Reverse Proxy)
-- **Container**: Docker + Docker Compose v2
-- **Frontend**: Bootstrap 5, Noto Sans KR, Bebas Neue
