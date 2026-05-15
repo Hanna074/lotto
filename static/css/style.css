@@ -1,0 +1,516 @@
+/* ============================================================
+   LOTTO 6/45 — Design System
+   Font: Bebas Neue (display) + Noto Sans KR (body)
+   Theme: Dark Navy + Golden Yellow — luxury lottery aesthetic
+   ============================================================ */
+
+:root {
+  --navy:       #0d1b3e;
+  --navy-mid:   #16295c;
+  --navy-light: #1e3a7b;
+  --gold:       #f5c518;
+  --gold-light: #ffd84d;
+  --gold-dim:   #b8920a;
+  --white:      #ffffff;
+  --off-white:  #f4f6fb;
+  --gray-100:   #eef1f8;
+  --gray-300:   #c8cfe0;
+  --gray-500:   #8290a8;
+  --gray-700:   #444f63;
+  --red:        #e63946;
+  --green:      #2dc653;
+  --radius:     12px;
+  --radius-lg:  20px;
+  --shadow:     0 4px 24px rgba(0,0,0,.18);
+  --shadow-lg:  0 8px 40px rgba(0,0,0,.28);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--off-white);
+  color: var(--gray-700);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main.main-content { flex: 1; }
+
+/* ── SCROLLBAR ────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--gray-100); }
+::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 3px; }
+
+/* ── NAVBAR ───────────────────────────────── */
+.lotto-navbar {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+  border-bottom: 3px solid var(--gold);
+  box-shadow: 0 2px 20px rgba(0,0,0,.4);
+  padding: 12px 0;
+}
+
+.lotto-brand-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.6rem;
+  letter-spacing: .05em;
+  color: var(--white);
+}
+
+.brand-highlight { color: var(--gold); }
+.lotto-logo-icon { font-size: 1.4rem; }
+
+.navbar-nav .nav-link {
+  font-weight: 500;
+  font-size: .92rem;
+  letter-spacing: .02em;
+  padding: 6px 14px !important;
+  border-radius: 8px;
+  transition: background .2s, color .2s;
+}
+.navbar-nav .nav-link:hover { background: rgba(255,255,255,.1); color: var(--gold) !important; }
+
+/* ── FOOTER ───────────────────────────────── */
+.lotto-footer {
+  background: var(--navy);
+  color: var(--gray-300);
+  border-top: 3px solid var(--gold);
+}
+
+/* ── HERO ─────────────────────────────────── */
+.hero-section {
+  position: relative;
+  background: linear-gradient(135deg, var(--navy) 0%, #0a1628 60%, #1a2d5a 100%);
+  overflow: hidden;
+  padding: 80px 0;
+}
+
+.hero-bg {
+  position: absolute; inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(245,197,24,.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(245,197,24,.05) 0%, transparent 40%);
+  pointer-events: none;
+}
+
+.hero-subtitle {
+  font-size: .9rem;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: .15em;
+  margin-bottom: 12px;
+}
+
+.hero-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3.5rem, 8vw, 6rem);
+  line-height: 1.0;
+  color: var(--white);
+  margin-bottom: 20px;
+}
+
+.text-yellow { color: var(--gold); }
+
+.hero-desc {
+  font-size: 1.05rem;
+  color: rgba(255,255,255,.75);
+  line-height: 1.7;
+}
+
+.btn-hero-primary {
+  background: var(--gold);
+  color: var(--navy);
+  font-weight: 700;
+  padding: 12px 28px;
+  border-radius: var(--radius);
+  border: none;
+  font-size: 1rem;
+  transition: all .2s;
+  box-shadow: 0 4px 16px rgba(245,197,24,.35);
+}
+.btn-hero-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245,197,24,.5); color: var(--navy); }
+
+.btn-hero-secondary {
+  background: transparent;
+  color: var(--white);
+  font-weight: 600;
+  padding: 12px 28px;
+  border-radius: var(--radius);
+  border: 2px solid rgba(255,255,255,.4);
+  font-size: 1rem;
+  transition: all .2s;
+}
+.btn-hero-secondary:hover { border-color: var(--white); background: rgba(255,255,255,.1); color: var(--white); }
+
+/* Hero balls display */
+.lotto-balls-display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
+  max-width: 320px;
+}
+
+/* ── LOTTO BALLS ──────────────────────────── */
+.ball {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: 700;
+  font-family: 'Noto Sans KR', sans-serif;
+  flex-shrink: 0;
+  line-height: 1;
+  box-shadow: inset -2px -3px 6px rgba(0,0,0,.25), inset 2px 2px 6px rgba(255,255,255,.3);
+}
+
+/* Sizes */
+.ball-xs  { width: 28px;  height: 28px;  font-size: .68rem; }
+.ball-sm  { width: 34px;  height: 34px;  font-size: .78rem; }
+.ball-md  { width: 42px;  height: 42px;  font-size: .9rem; }
+.ball-lg  { width: 52px;  height: 52px;  font-size: 1.05rem; }
+.ball-xl  { width: 64px;  height: 64px;  font-size: 1.3rem; }
+.ball-hero{ width: 72px;  height: 72px;  font-size: 1.5rem; }
+
+/* Colors by range */
+.ball-yellow { background: linear-gradient(145deg, #ffd84d, #f5a623); color: #2d1a00; border: 2px solid #e6940a; }
+.ball-blue   { background: linear-gradient(145deg, #4a9eff, #1565c0); color: #fff; border: 2px solid #0d47a1; }
+.ball-red    { background: linear-gradient(145deg, #f7391b, #d41717); color: #fff; border: 2px solid #b71c1c; }
+.ball-black  { background: linear-gradient(145deg, #616161, #212121); color: #fff; border: 2px solid #111; }
+.ball-green  { background: linear-gradient(145deg, #66bb6a, #2e7d32); color: #fff; border: 2px solid #1b5e20; }
+.ball-bonus  { background: linear-gradient(145deg, #ab47bc, #6a1b9a); color: #fff; border: 2px solid #4a148c; }
+.ball-empty  { background: linear-gradient(145deg, #cfd8dc, #90a4ae); color: #455a64; border: 2px solid #b0bec5; }
+
+.ball-matched {
+  box-shadow: 0 0 0 3px var(--gold), inset -2px -3px 6px rgba(0,0,0,.25);
+  transform: scale(1.1);
+}
+
+/* ── SECTIONS ─────────────────────────────── */
+.section-header { text-align: center; margin-bottom: 2.5rem; }
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.2rem;
+  color: var(--navy);
+  letter-spacing: .05em;
+}
+
+/* ── LATEST RESULT CARD ───────────────────── */
+.latest-result-card {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  color: white;
+  box-shadow: var(--shadow-lg);
+}
+
+.draw-badge {
+  background: var(--gold);
+  color: var(--navy);
+  font-weight: 900;
+  font-size: 1.1rem;
+  padding: 6px 18px;
+  border-radius: 20px;
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: .05em;
+}
+
+.draw-date { color: rgba(255,255,255,.7); font-size: .9rem; }
+.bonus-separator { color: var(--gold); font-weight: 900; font-size: 1.5rem; }
+.bonus-label { color: rgba(255,255,255,.6); font-size: .8rem; }
+
+/* ── INFO CARDS ───────────────────────────── */
+.info-section { background: var(--gray-100); }
+
+.info-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 32px 24px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  transition: transform .2s, box-shadow .2s;
+  height: 100%;
+}
+.info-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+
+.info-icon {
+  width: 56px; height: 56px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+  color: var(--navy);
+  border-radius: 50%;
+  font-size: 1.5rem;
+  font-weight: 900;
+  font-family: 'Bebas Neue', sans-serif;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+/* ── PAGE HEADER ──────────────────────────── */
+.page-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 3px solid var(--gold);
+}
+.page-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  color: var(--navy);
+  letter-spacing: .05em;
+  margin-bottom: 4px;
+}
+.page-subtitle { color: var(--gray-500); margin-bottom: 0; }
+
+/* ── BUY CARDS ────────────────────────────── */
+.buy-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  height: 100%;
+}
+
+.buy-card-header {
+  padding: 32px 24px;
+  text-align: center;
+  color: white;
+}
+.buy-card-header.auto   { background: linear-gradient(135deg, #1565c0, #0d47a1); }
+.buy-card-header.manual { background: linear-gradient(135deg, var(--navy), var(--navy-mid)); }
+.buy-card-header h4 { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: .05em; margin-bottom: 6px; }
+
+.buy-card-body { padding: 28px; }
+
+.btn-buy-auto {
+  background: linear-gradient(135deg, #1976d2, #1565c0);
+  color: white; font-weight: 700; font-size: 1.05rem;
+  padding: 14px; border-radius: var(--radius); border: none;
+  transition: all .2s;
+}
+.btn-buy-auto:hover { background: linear-gradient(135deg, #1e88e5, #1976d2); color: white; transform: translateY(-1px); }
+
+.btn-buy-manual {
+  background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+  color: var(--navy); font-weight: 700; font-size: 1.05rem;
+  padding: 14px; border-radius: var(--radius); border: none;
+  transition: all .2s;
+}
+.btn-buy-manual:hover { background: linear-gradient(135deg, var(--gold-light), var(--gold)); color: var(--navy); transform: translateY(-1px); }
+.btn-buy-manual:disabled { opacity: .5; transform: none; cursor: not-allowed; }
+
+/* Number grid */
+.number-grid {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 6px;
+}
+
+.num-btn {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2px solid var(--gray-300);
+  background: white;
+  font-size: .78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s;
+  color: var(--gray-700);
+  padding: 0;
+}
+.num-btn:hover {
+  border-color: var(--gold);
+  background: rgba(245, 197, 24, .1);
+  transform: scale(1.1);
+}
+.num-btn.active {
+  border-color: transparent;
+  color: white;
+  transform: scale(1.08);
+}
+.num-btn.ball-yellow { background: linear-gradient(145deg, #ffd84d, #f5a623); color: #2d1a00; border-color: transparent; }
+.num-btn.ball-blue   { background: linear-gradient(145deg, #4a9eff, #1565c0); color: #fff; border-color: transparent; }
+.num-btn.ball-red    { background: linear-gradient(145deg, #ff6b6b, #c62828); color: #fff; border-color: transparent; }
+.num-btn.ball-black  { background: linear-gradient(145deg, #616161, #212121); color: #fff; border-color: transparent; }
+.num-btn.ball-green  { background: linear-gradient(145deg, #66bb6a, #2e7d32); color: #fff; border-color: transparent; }
+
+/* ── TICKET CARDS ─────────────────────────── */
+.ticket-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.08);
+  border-left: 5px solid var(--gray-300);
+  transition: box-shadow .2s;
+}
+.ticket-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,.14); }
+.ticket-win   { border-left-color: var(--gold); background: #fffdf0; }
+.ticket-win-1 { border-left-color: #e63946; background: #fff0f1; }
+.ticket-normal { border-left-color: var(--gray-300); }
+
+.ticket-round { display: flex; flex-direction: column; gap: 4px; }
+.round-label  { font-weight: 700; color: var(--navy); font-size: .95rem; }
+.round-date   { font-size: .8rem; color: var(--gray-500); }
+
+.prize-amount { font-size: .8rem; color: var(--gold-dim); font-weight: 700; margin-top: 4px; }
+
+/* ── RESULT BADGES ────────────────────────── */
+.result-badge { font-size: .82rem; padding: 5px 12px; border-radius: 20px; font-weight: 700; }
+.badge-rank-1       { background: linear-gradient(135deg, #e63946, #b71c1c); color: white; }
+.badge-rank-2       { background: linear-gradient(135deg, #ff9800, #e65100); color: white; }
+.badge-rank-3       { background: linear-gradient(135deg, var(--gold), var(--gold-dim)); color: var(--navy); }
+.badge-rank-4       { background: linear-gradient(135deg, #4caf50, #2e7d32); color: white; }
+.badge-rank-5       { background: linear-gradient(135deg, #2196f3, #1565c0); color: white; }
+.badge-rank-lose    { background: var(--gray-300); color: var(--gray-700); }
+.badge-rank-pending { background: var(--gray-100); color: var(--gray-500); border: 1px solid var(--gray-300); }
+
+/* ── ADMIN CARDS ──────────────────────────── */
+.admin-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.admin-card-header {
+  background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+  color: white;
+  padding: 16px 24px;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.admin-card-body { padding: 24px; }
+
+/* ── STAT CARDS ───────────────────────────── */
+.stat-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: var(--shadow);
+}
+.stat-icon { font-size: 2rem; color: var(--gold); }
+.stat-label { display: block; font-size: .82rem; color: var(--gray-500); }
+.stat-value { display: block; font-size: 1.8rem; font-weight: 900; color: var(--navy); font-family: 'Bebas Neue', sans-serif; letter-spacing: .05em; }
+
+/* ── RANK STAT CARDS ──────────────────────── */
+.rank-stat-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  border-top: 4px solid var(--gray-300);
+}
+.rank-1 { border-top-color: #e63946; }
+.rank-2 { border-top-color: #ff9800; }
+.rank-3 { border-top-color: var(--gold); }
+.rank-4 { border-top-color: #4caf50; }
+.rank-5 { border-top-color: #2196f3; }
+.rank-label { font-size: .8rem; color: var(--gray-500); }
+.rank-count  { font-size: 2rem; font-weight: 900; font-family: 'Bebas Neue', sans-serif; color: var(--navy); }
+
+/* ── DRAW ANIMATION ───────────────────────── */
+.draw-animation-area {
+  background: var(--gray-100);
+  border-radius: var(--radius);
+  padding: 28px;
+  text-align: center;
+}
+
+.current-round-info {
+  background: var(--gray-100);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+/* ── TABLES ───────────────────────────────── */
+.table-lotto { border-collapse: separate; border-spacing: 0; }
+.table-lotto thead th {
+  background: var(--navy);
+  color: var(--gold);
+  font-weight: 700;
+  font-size: .85rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  border: none;
+  padding: 14px 16px;
+}
+.table-lotto thead th:first-child { border-radius: var(--radius) 0 0 0; }
+.table-lotto thead th:last-child  { border-radius: 0 var(--radius) 0 0; }
+.table-lotto tbody td { padding: 12px 16px; border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
+.table-lotto tbody tr:hover td { background: rgba(245,197,24,.05); }
+.table-lotto tbody tr:last-child td { border-bottom: none; }
+
+/* ── AUTH CARDS ───────────────────────────── */
+.auth-card {
+  max-width: 440px;
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.auth-header {
+  background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+  color: white;
+  text-align: center;
+  padding: 40px 32px 32px;
+}
+.auth-icon { font-size: 3rem; margin-bottom: 12px; }
+.auth-header h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: .05em; margin-bottom: 6px; }
+.auth-header p { color: rgba(255,255,255,.7); font-size: .9rem; margin: 0; }
+
+.auth-body { padding: 32px; }
+
+.btn-auth {
+  background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+  color: var(--navy);
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 14px;
+  border-radius: var(--radius);
+  border: none;
+  transition: all .2s;
+}
+.btn-auth:hover { background: linear-gradient(135deg, var(--gold-light), var(--gold)); color: var(--navy); transform: translateY(-1px); }
+
+/* ── FILTER BAR ───────────────────────────── */
+.filter-bar {
+  background: white;
+  border-radius: var(--radius);
+  padding: 14px 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.07);
+}
+
+/* ── EMPTY STATE ──────────────────────────── */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--gray-500);
+}
+
+/* ── FORM CONTROLS ────────────────────────── */
+.form-control:focus, .form-select:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(245,197,24,.2);
+}
+
+/* ── ALERT COLORS ─────────────────────────── */
+.alert-success { border-left: 4px solid var(--green); }
+.alert-error, .alert-danger { border-left: 4px solid var(--red); }
+.alert-info { border-left: 4px solid #2196f3; }
+.alert-warning { border-left: 4px solid var(--gold); }
+
+/* ── RESPONSIVE ───────────────────────────── */
+@media (max-width: 768px) {
+  .hero-section { padding: 50px 0; }
+  .hero-title { font-size: 3.5rem; }
+  .number-grid { grid-template-columns: repeat(7, 1fr); }
+  .buy-card-header { padding: 22px 16px; }
+  .latest-result-card { padding: 20px; }
+}

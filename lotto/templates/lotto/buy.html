@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+{% block title %}복권 구매 - LOTTO {% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="page-header">
+    <h2 class="page-title"><i class="bi bi-ticket-perforated-fill me-2"></i>복권 구매</h2>
+    <p class="page-subtitle">제{{ drawing.draw_number }}회 | 추첨일: {{ drawing.draw_date }}</p>
+  </div>
+
+  <div class="row g-4 justify-content-center">
+
+    <!-- 자동 구매 -->
+    <div class="col-lg-5">
+      <div class="buy-card">
+        <div class="buy-card-header auto">
+          <i class="bi bi-shuffle display-5 mb-2"></i>
+          <h4>자동 추첨</h4>
+          <p class="mb-0 small">컴퓨터가 1~45 중 6개를 무작위로 선택합니다</p>
+        </div>
+        <div class="buy-card-body">
+          <div class="auto-preview mb-4" id="autoPreview">
+            <div class="d-flex gap-2 justify-content-center flex-wrap" id="autoBalls">
+              <div class="ball ball-lg ball-empty">?</div>
+              <div class="ball ball-lg ball-empty">?</div>
+              <div class="ball ball-lg ball-empty">?</div>
+              <div class="ball ball-lg ball-empty">?</div>
+              <div class="ball ball-lg ball-empty">?</div>
+              <div class="ball ball-lg ball-empty">?</div>
+            </div>
+          </div>
+          <button type="button" class="btn btn-outline-warning w-100 mb-3" onclick="generatePreview()">
+            <i class="bi bi-arrow-clockwise me-2"></i>미리보기
+          </button>
+          <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="type" value="auto">
+            <button type="submit" class="btn btn-buy-auto w-100">
+              <i class="bi bi-lightning-fill me-2"></i>자동 구매하기
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- 수동 구매 -->
+    <div class="col-lg-5">
+      <div class="buy-card">
+        <div class="buy-card-header manual">
+          <i class="bi bi-pencil-square display-5 mb-2"></i>
+          <h4>수동 추첨</h4>
+          <p class="mb-0 small">1~45 사이의 서로 다른 6개 번호를 직접 입력합니다</p>
+        </div>
+        <div class="buy-card-body">
+          <form method="post" id="manualForm">
+            {% csrf_token %}
+            <input type="hidden" name="type" value="manual">
+
+            <!-- 번호판 선택 -->
+            <div class="number-grid mb-4" id="numberGrid">
+              {% for n in numbers_range %}
+              <button type="button" class="num-btn" data-num="{{ n }}" onclick="toggleNumber(this)">{{ n }}</button>
+              {% endfor %}
+            </div>
+
+            <!-- 선택된 번호 표시 -->
+            <div class="selected-numbers mb-3">
+              <p class="small text-muted mb-2">선택한 번호 (<span id="selectedCount">0</span>/6)</p>
+              <div class="d-flex gap-2 justify-content-center flex-wrap" id="selectedBalls">
+                <div class="ball ball-md ball-empty" id="slot1">-</div>
+                <div class="ball ball-md ball-empty" id="slot2">-</div>
+                <div class="ball ball-md ball-empty" id="slot3">-</div>
+                <div class="ball ball-md ball-empty" id="slot4">-</div>
+                <div class="ball ball-md ball-empty" id="slot5">-</div>
+                <div class="ball ball-md ball-empty" id="slot6">-</div>
+              </div>
+            </div>
+
+            <!-- hidden inputs -->
+            <input type="hidden" name="n1" id="input1" value="">
+            <input type="hidden" name="n2" id="input2" value="">
+            <input type="hidden" name="n3" id="input3" value="">
+            <input type="hidden" name="n4" id="input4" value="">
+            <input type="hidden" name="n5" id="input5" value="">
+            <input type="hidden" name="n6" id="input6" value="">
+
+            <button type="button" class="btn btn-outline-secondary w-100 mb-2" onclick="clearAll()">
+              <i class="bi bi-x-circle me-2"></i>초기화
+            </button>
+            <button type="submit" class="btn btn-buy-manual w-100" id="submitManual" disabled>
+              <i class="bi bi-check2-circle me-2"></i>수동 구매하기
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const selected = [];
+
+function getBallColor(n) {
+  if (n <= 10)  return 'ball-yellow';
+  if (n <= 20)  return 'ball-blue';
+  if (n <= 30)  return 'ball-red';
+  if (n <= 40)  return 'ball-black';
+  return 'ball-green';
+}
+
+function toggleNumber(btn) {
+  const n = parseInt(btn.dataset.num);
+  const idx = selected.indexOf(n);
+  if (idx >= 0) {
+    selected.splice(idx, 1);
+    btn.classList.remove('active');
+  } else {
+    if (selected.length >= 6) {
+      alert('6개만 선택할 수 있습니다.');
+      return;
+    }
+    selected.push(n);
+    btn.classList.add('active', getBallColor(n));
+  }
+  updateSlots();
+}
+
+function updateSlots() {
+  const sorted = [...selected].sort((a,b) => a - b);
+  document.getElementById('selectedCount').textContent = sorted.length;
+
+  for (let i = 1; i <= 6; i++) {
+    const slot  = document.getElementById('slot' + i);
+    const input = document.getElementById('input' + i);
+    if (sorted[i-1] !== undefined) {
+      const n = sorted[i-1];
+      slot.textContent = n;
+      slot.className   = `ball ball-md ${getBallColor(n)}`;
+      input.value      = n;
+    } else {
+      slot.textContent = '-';
+      slot.className   = 'ball ball-md ball-empty';
+      input.value      = '';
+    }
+  }
+  document.getElementById('submitManual').disabled = sorted.length !== 6;
+}
+
+function clearAll() {
+  selected.length = 0;
+  document.querySelectorAll('.num-btn.active').forEach(b => {
+    b.className = 'num-btn';
+  });
+  updateSlots();
+}
+
+function generatePreview() {
+  const pool = Array.from({length: 45}, (_, i) => i + 1);
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  const nums = pool.slice(0, 6).sort((a, b) => a - b);
+  const container = document.getElementById('autoBalls');
+  container.innerHTML = '';
+  nums.forEach(n => {
+    const d = document.createElement('div');
+    d.className = `ball ball-lg ${getBallColor(n)}`;
+    d.textContent = n;
+    container.appendChild(d);
+  });
+}
+</script>
+{% endblock %}

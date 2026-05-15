@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}회원가입 - LOTTO 6/45{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="auth-card mx-auto">
+    <div class="auth-header">
+      <div class="auth-icon">🍀</div>
+      <h3>회원가입</h3>
+      <p>로또와 함께 행운을 잡으세요!</p>
+    </div>
+    <div class="auth-body">
+      <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="mb-3">
+          <label class="form-label fw-semibold">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+          <div class="invalid-feedback d-block">
+            {% for error in field.errors %}{{ error }}{% endfor %}
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-auth w-100 mt-2">
+          <i class="bi bi-person-check-fill me-2"></i>가입하기
+        </button>
+      </form>
+      <hr class="my-4">
+      <p class="text-center mb-0">이미 계정이 있으신가요? <a href="{% url 'login' %}" class="link-warning fw-bold">로그인</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

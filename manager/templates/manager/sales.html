@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}판매 내역 - 관리자{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="page-header">
+    <h2 class="page-title"><i class="bi bi-receipt me-2"></i>판매 내역</h2>
+    <p class="page-subtitle">복권 판매 현황을 확인합니다</p>
+  </div>
+
+  <!-- 통계 카드 -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="stat-card">
+        <div class="stat-icon"><i class="bi bi-ticket-perforated-fill"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">총 판매</span>
+          <span class="stat-value">{{ total }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stat-card">
+        <div class="stat-icon text-info"><i class="bi bi-shuffle"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">자동 구매</span>
+          <span class="stat-value">{{ auto_count }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stat-card">
+        <div class="stat-icon text-success"><i class="bi bi-pencil-square"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">수동 구매</span>
+          <span class="stat-value">{{ manual_count }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 필터 -->
+  <div class="filter-bar mb-4">
+    <form method="get" class="d-flex gap-2 align-items-center flex-wrap">
+      <label class="fw-semibold me-2">회차 필터:</label>
+      <select name="draw" class="form-select form-select-sm" style="width:auto;" onchange="this.form.submit()">
+        <option value="">전체</option>
+        {% for d in drawings %}
+        <option value="{{ d.draw_number }}" {% if draw_filter == d.draw_number|stringformat:"s" %}selected{% endif %}>
+          제{{ d.draw_number }}회
+        </option>
+        {% endfor %}
+      </select>
+      {% if draw_filter %}
+      <a href="{% url 'sales_list' %}" class="btn btn-sm btn-outline-secondary">초기화</a>
+      {% endif %}
+    </form>
+  </div>
+
+  <!-- 판매 테이블 -->
+  <div class="admin-card">
+    <div class="admin-card-body p-0">
+      {% if purchases %}
+      <div class="table-responsive">
+        <table class="table table-lotto mb-0">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>구매자</th>
+              <th>회차</th>
+              <th>선택 번호</th>
+              <th>유형</th>
+              <th>구매 일시</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in purchases %}
+            <tr>
+              <td class="text-muted small">{{ forloop.counter }}</td>
+              <td><i class="bi bi-person-circle me-1"></i>{{ p.user.username }}</td>
+              <td><span class="fw-bold text-warning">제{{ p.drawing.draw_number }}회</span></td>
+              <td>
+                <div class="d-flex gap-1 flex-wrap">
+                  {% for n in p.numbers %}
+                  <span class="ball ball-xs ball-color-auto" data-number="{{ n }}">{{ n }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              <td>
+                <span class="badge {% if p.purchase_type == 'auto' %}bg-info{% else %}bg-secondary{% endif %}">
+                  {{ p.get_purchase_type_display }}
+                </span>
+              </td>
+              <td class="small text-muted">{{ p.purchased_at|date:"Y-m-d H:i" }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="empty-state py-5">
+        <i class="bi bi-inbox" style="font-size:3rem;color:#ccc;"></i>
+        <p class="mt-2">판매 내역이 없습니다.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function getBallColor(n) {
+  if (n <= 10)  return 'ball-yellow';
+  if (n <= 20)  return 'ball-blue';
+  if (n <= 30)  return 'ball-red';
+  if (n <= 40)  return 'ball-black';
+  return 'ball-green';
+}
+document.querySelectorAll('.ball-color-auto').forEach(ball => {
+  const n = parseInt(ball.dataset.number);
+  ball.classList.add(getBallColor(n));
+});
+</script>
+{% endblock %}

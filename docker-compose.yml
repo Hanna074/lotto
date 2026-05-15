@@ -1,0 +1,52 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: lotto_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: lottodb
+      POSTGRES_USER: lottouser
+      POSTGRES_PASSWORD: lottopass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  web:
+    build: .
+    container_name: lotto_web
+    restart: unless-stopped
+    command: gunicorn lotto_project.wsgi:application --bind 0.0.0.0:8000 --workers 2
+    volumes:
+      - static_volume:/app/staticfiles
+    env_file:
+      - .env
+    depends_on:
+      - db
+    networks:
+      - backend
+      - frontend
+
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: lotto_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - static_volume:/app/staticfiles
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - web
+    networks:
+      - frontend
+
+volumes:
+  postgres_data:
+  static_volume:
+
+networks:
+  backend:
+  frontend:

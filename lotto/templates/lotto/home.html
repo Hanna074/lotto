@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+
+{% block title %}LOTTO - 행운을 잡으세요!{% endblock %}
+
+{% block content %}
+<!-- HERO SECTION -->
+<section class="hero-section">
+  <div class="hero-bg"></div>
+  <div class="container position-relative">
+    <div class="row align-items-center min-vh-50 py-5">
+      <div class="col-lg-6">
+        <div class="hero-content">
+          <p class="hero-subtitle">온라인 복권 추첨 </p>
+          <h1 class="hero-title">행운의<br><span class="text-yellow">LOTTO</span><br></h1>
+          <p class="hero-desc">1~45 중 6개의 숫자를 선택하세요.<br>당신의 행운 번호를 지금 선택하세요!</p>
+          <div class="d-flex gap-3 flex-wrap mt-4">
+            {% if user.is_authenticated %}
+            <a href="{% url 'buy_ticket' %}" class="btn btn-hero-primary">
+              <i class="bi bi-ticket-perforated-fill me-2"></i>지금 구매하기
+            </a>
+            <a href="{% url 'my_tickets' %}" class="btn btn-hero-secondary">
+              <i class="bi bi-card-checklist me-2"></i>내 복권 확인
+            </a>
+            {% else %}
+            <a href="{% url 'signup' %}" class="btn btn-hero-primary">
+              <i class="bi bi-person-plus-fill me-2"></i>무료 회원가입
+            </a>
+            <a href="{% url 'login' %}" class="btn btn-hero-secondary">
+              <i class="bi bi-box-arrow-in-right me-2"></i>로그인
+            </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 d-none d-lg-flex justify-content-center">
+        <div class="lotto-balls-display">
+          <div class="ball ball-hero ball-yellow">1</div>
+          <div class="ball ball-hero ball-blue">5</div>
+          <div class="ball ball-hero ball-red">12</div>
+          <div class="ball ball-hero ball-black">23</div>
+          <div class="ball ball-hero ball-green">34</div>
+          <div class="ball ball-hero ball-yellow">45</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 최근 당첨 번호 -->
+<section class="py-5">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title"><i class="bi bi-trophy-fill text-warning me-2"></i>최근 당첨 번호</h2>
+    </div>
+
+    {% if latest_drawing %}
+    <div class="latest-result-card">
+      <div class="row align-items-center">
+        <div class="col-md-3">
+          <div class="draw-info">
+            <span class="draw-badge">제 {{ latest_drawing.draw_number }}회</span>
+            <p class="draw-date mt-2 mb-0">{{ latest_drawing.draw_date }}</p>
+          </div>
+        </div>
+        <div class="col-md-9">
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            {% for n in latest_drawing.numbers %}
+            <div class="ball ball-lg ball-color-auto" data-number="{{ n }}">{{ n }}</div>
+            {% endfor %}
+            <div class="bonus-separator">+</div>
+            <div class="ball ball-lg ball-bonus" data-number="{{ latest_drawing.bonus }}">{{ latest_drawing.bonus }}</div>
+            <span class="bonus-label">보너스</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <i class="bi bi-hourglass-split"></i>
+      <p>아직 추첨된 회차가 없습니다.</p>
+    </div>
+    {% endif %}
+
+    <!-- 최근 5회차 목록 -->
+    {% if recent_drawings|length > 1 %}
+    <div class="mt-4">
+      <h5 class="fw-bold mb-3">최근 당첨 번호 이력</h5>
+      <div class="table-responsive">
+        <table class="table table-lotto">
+          <thead>
+            <tr>
+              <th>회차</th>
+              <th>추첨일</th>
+              <th>당첨 번호</th>
+              <th>보너스</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for d in recent_drawings %}
+            <tr>
+              <td><span class="fw-bold text-warning">제{{ d.draw_number }}회</span></td>
+              <td>{{ d.draw_date }}</td>
+              <td>
+                <div class="d-flex gap-1 flex-wrap">
+                  {% for n in d.numbers %}
+                  <span class="ball ball-sm ball-color-auto" data-number="{{ n }}">{{ n }}</span>
+                  {% endfor %}
+                </div>
+              </td>
+              <td><span class="ball ball-sm ball-bonus" data-number="{{ d.bonus }}">{{ d.bonus }}</span></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- 안내 섹션 -->
+<section class="info-section py-5">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">이용 방법</h2>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="info-card">
+          <div class="info-icon">1</div>
+          <h5>회원가입</h5>
+          <p>아이디와 이메일로 가입하세요.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="info-card">
+          <div class="info-icon">2</div>
+          <h5>복권 구매</h5>
+          <p>수동으로 번호를 선택하거나, 자동으로 번호를 추첨 받으세요.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="info-card">
+          <div class="info-icon">3</div>
+          <h5>당첨 확인</h5>
+          <p>추첨 후 '내 복권' 메뉴에서 당첨 여부를 확인하세요.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// 공 색상 자동 적용
+document.querySelectorAll('.ball-color-auto').forEach(ball => {
+  const n = parseInt(ball.dataset.number);
+  ball.classList.add(getBallColor(n));
+});
+function getBallColor(n) {
+  if (n <= 10)  return 'ball-yellow';
+  if (n <= 20)  return 'ball-blue';
+  if (n <= 30)  return 'ball-red';
+  if (n <= 40)  return 'ball-black';
+  return 'ball-green';
+}
+</script>
+{% endblock %}

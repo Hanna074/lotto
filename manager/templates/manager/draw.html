@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% block title %}추첨 관리 - 관리자{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="page-header">
+    <h2 class="page-title"><i class="bi bi-shuffle me-2"></i>추첨 관리</h2>
+    <p class="page-subtitle">회차 생성 및 당첨 번호 추첨을 진행합니다</p>
+  </div>
+
+  <div class="row g-4">
+    <!-- 현재 회차 추첨 -->
+    <div class="col-lg-6">
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <i class="bi bi-play-circle-fill me-2"></i>추첨 실행
+        </div>
+        <div class="admin-card-body">
+          {% if current_drawing %}
+          <div class="current-round-info mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="fw-bold fs-4">제{{ current_drawing.draw_number }}회</span>
+              <span class="badge bg-warning text-dark">추첨 대기</span>
+            </div>
+            <p class="text-muted mb-0"><i class="bi bi-calendar3 me-1"></i>추첨 예정일: {{ current_drawing.draw_date }}</p>
+          </div>
+
+          <!-- 추첨 애니메이션 영역 -->
+          <div class="draw-animation-area mb-4" id="drawArea">
+            <div class="d-flex gap-2 justify-content-center flex-wrap">
+              <div class="ball ball-xl ball-empty" id="drawBall1">?</div>
+              <div class="ball ball-xl ball-empty" id="drawBall2">?</div>
+              <div class="ball ball-xl ball-empty" id="drawBall3">?</div>
+              <div class="ball ball-xl ball-empty" id="drawBall4">?</div>
+              <div class="ball ball-xl ball-empty" id="drawBall5">?</div>
+              <div class="ball ball-xl ball-empty" id="drawBall6">?</div>
+              <div class="bonus-separator fs-4">+</div>
+              <div class="ball ball-xl ball-empty" id="drawBonus">?</div>
+            </div>
+          </div>
+
+          <form method="post" onsubmit="return confirmDraw()">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="draw">
+            <button type="submit" class="btn btn-danger w-100 btn-lg" id="drawBtn">
+              <i class="bi bi-shuffle me-2"></i>추첨 시작!
+            </button>
+          </form>
+
+          {% else %}
+          <div class="empty-state">
+            <i class="bi bi-inbox" style="font-size:3rem;color:#ccc;"></i>
+            <p class="mt-2">현재 추첨 대기 중인 회차가 없습니다.<br>아래에서 새 회차를 생성하세요.</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- 새 회차 생성 -->
+    <div class="col-lg-6">
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <i class="bi bi-plus-circle-fill me-2"></i>새 회차 생성
+        </div>
+        <div class="admin-card-body">
+          <p class="text-muted">새로운 추첨 회차를 생성합니다. 추첨일은 오늘로부터 7일 후로 자동 설정됩니다.</p>
+          {% if current_drawing %}
+          <div class="alert alert-info">
+            <i class="bi bi-info-circle me-2"></i>
+            현재 <strong>제{{ current_drawing.draw_number }}회</strong> 추첨이 대기 중입니다.<br>
+            추첨을 완료한 후 새 회차를 생성할 수 있습니다.
+          </div>
+          {% else %}
+          <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="create_round">
+            <button type="submit" class="btn btn-success w-100 btn-lg">
+              <i class="bi bi-plus-circle-fill me-2"></i>새 회차 생성
+            </button>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- 완료된 회차 목록 -->
+      <div class="admin-card mt-4">
+        <div class="admin-card-header">
+          <i class="bi bi-clock-history me-2"></i>완료된 추첨
+        </div>
+        <div class="admin-card-body p-0">
+          {% if completed %}
+          <div class="table-responsive">
+            <table class="table table-sm table-lotto mb-0">
+              <thead>
+                <tr>
+                  <th>회차</th>
+                  <th>추첨일</th>
+                  <th>당첨 번호</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for d in completed %}
+                <tr>
+                  <td class="fw-bold text-warning">제{{ d.draw_number }}회</td>
+                  <td class="small">{{ d.draw_date }}</td>
+                  <td>
+                    <div class="d-flex gap-1 flex-wrap">
+                      {% for n in d.numbers %}
+                      <span class="ball ball-xs ball-color-auto" data-number="{{ n }}">{{ n }}</span>
+                      {% endfor %}
+                      <span class="ball ball-xs ball-bonus" data-number="{{ d.bonus }}">{{ d.bonus }}</span>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <p class="text-muted text-center py-3">완료된 추첨이 없습니다.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function getBallColor(n) {
+  if (n <= 10)  return 'ball-yellow';
+  if (n <= 20)  return 'ball-blue';
+  if (n <= 30)  return 'ball-red';
+  if (n <= 40)  return 'ball-black';
+  return 'ball-green';
+}
+document.querySelectorAll('.ball-color-auto').forEach(ball => {
+  const n = parseInt(ball.dataset.number);
+  ball.classList.add(getBallColor(n));
+});
+
+function confirmDraw() {
+  return confirm('정말로 추첨을 실행하시겠습니까? 이 작업은 되돌릴 수 없습니다.');
+}
+</script>
+{% endblock %}
