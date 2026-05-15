@@ -118,6 +118,7 @@ function toggleNumber(btn) {
   if (idx >= 0) {
     selected.splice(idx, 1);
     btn.classList.remove('active');
+    btn.classList.remove(getBallColor(n));
   } else {
     if (selected.length >= 6) {
       alert('6개만 선택할 수 있습니다.');
